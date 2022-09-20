@@ -97,7 +97,7 @@ public class Employee {
      * The string is de-serialized into the object fields
      * @param row the CSV row
      */
-    public Employee(String row) {
+    public Employee(String row) throws IllegalArgumentException {
         try {
             String clean = row.replace("^[ \\t]+|[ \\t]+$", "");
             String[] elements = clean.split(",");
