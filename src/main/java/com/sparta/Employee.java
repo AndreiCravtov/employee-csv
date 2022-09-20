@@ -93,6 +93,26 @@ public class Employee {
     }
 
     /**
+     * Instantiates a new employee object, taking the data as a CSV row string.
+     * The string is de-serialized into the object fields
+     * @param row the CSV row
+     */
+    public Employee(String row) {
+        String clean = row.replace("^[ \\t]+|[ \\t]+$", "");
+        String[] elements = clean.split(",");
+        this.employeeID = Integer.parseInt(elements[0]);
+        this.namePrefix = elements[1];
+        this.firstName = elements[2];
+        this.middleInitial = elements[3].charAt(0);
+        this.lastName = elements[4];
+        this.gender = elements[5].charAt(0);
+        this.eMail = elements[6];
+        this.dateOfBirth = elements[7];
+        this.dateOfJoining = elements[8];
+        this.salary = Integer.parseInt(elements[9]);
+    }
+
+    /**
      * This method serializes the employee object.
      * It turns the fields in the employee object into a CSV row string.
      * @return the serialised CSV row string
