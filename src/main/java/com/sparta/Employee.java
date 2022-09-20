@@ -1,7 +1,7 @@
 package com.sparta;
 
 /**
- *
+ * A class representing an employee record.
  */
 public class Employee {
     private int employeeID;
@@ -55,6 +55,19 @@ public class Employee {
         return salary;
     }
 
+    /**
+     * Instantiates a new employee object, taking the data as parameters
+     * @param employeeID the employee ID
+     * @param namePrefix the title of the employee
+     * @param firstName the first name of the employee
+     * @param middleInitial the middle name initial of the employee
+     * @param lastName the last name of the employee
+     * @param gender a character representing the gender of the employee
+     * @param eMail the email of the employee
+     * @param dateOfBirth the date of birth of the employee
+     * @param dateOfJoining the date of joining to the company of the employee
+     * @param salary the salary of the employee
+     */
     public Employee(
             int employeeID,
             String namePrefix,
