@@ -18,10 +18,10 @@ public class Employee {
 
     /**
      * This method serializes the employee object.
-     * It turns the fields in the
-     * @return
+     * It turns the fields in the employee object into a CSV row string.
+     * @return the serialised CSV row string
      */
     public String serialize() {
-        return "";
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", employeeID, namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary);
     }
 }
