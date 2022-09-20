@@ -51,40 +51,12 @@
 - Functional programming is not all about speed, but also thread safety, ease of reading, etc.
 - Consider whether your code has been improved as a result of the changes and comment on this in your ```README.md```.
 
-## Groups
-
-### Group 1
-
-- Bilal Hamid
-- Andrei Hirleata
-- Ali Zahir
-- Yannan Mao
-- Luca Cooper-Lindsay
-- Maddy McMurray
-
-### Group 2
-
-- Daniils Beilins
-- Olegs Maklecovs
-- Joshua Jackson
-- Hammad Anwar
-- Bahadir Bektas
-
-### Group 3
-
-- Pavitar Singh
-- Goncalo Barros
-- Houssam Bououdina
-- Malek Busari
-- Abdullah Abdullah
-
-### Group 4
-
+## The team
 - Adam Lemdani
+- Andrei Cravtov
 - Dan Booth
 - Daniel Nenov
 - Lovedeep Saini
-- Andrei Cravtov
 
 ## Project Submission
 
