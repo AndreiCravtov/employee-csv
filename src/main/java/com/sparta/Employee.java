@@ -99,8 +99,7 @@ public class Employee {
      */
     public Employee(String row) throws IllegalArgumentException {
         try {
-            String clean = row.replace("^[ \\t]+|[ \\t]+$", "");
-            String[] elements = clean.split(",");
+            String[] elements = row.strip().split(",");
             this.employeeID = Integer.parseInt(elements[0]);
             this.namePrefix = elements[1];
             this.firstName = elements[2];
