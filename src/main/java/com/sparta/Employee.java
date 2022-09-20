@@ -98,18 +98,22 @@ public class Employee {
      * @param row the CSV row
      */
     public Employee(String row) {
-        String clean = row.replace("^[ \\t]+|[ \\t]+$", "");
-        String[] elements = clean.split(",");
-        this.employeeID = Integer.parseInt(elements[0]);
-        this.namePrefix = elements[1];
-        this.firstName = elements[2];
-        this.middleInitial = elements[3].charAt(0);
-        this.lastName = elements[4];
-        this.gender = elements[5].charAt(0);
-        this.eMail = elements[6];
-        this.dateOfBirth = elements[7];
-        this.dateOfJoining = elements[8];
-        this.salary = Integer.parseInt(elements[9]);
+        try {
+            String clean = row.replace("^[ \\t]+|[ \\t]+$", "");
+            String[] elements = clean.split(",");
+            this.employeeID = Integer.parseInt(elements[0]);
+            this.namePrefix = elements[1];
+            this.firstName = elements[2];
+            this.middleInitial = elements[3].charAt(0);
+            this.lastName = elements[4];
+            this.gender = elements[5].charAt(0);
+            this.eMail = elements[6];
+            this.dateOfBirth = elements[7];
+            this.dateOfJoining = elements[8];
+            this.salary = Integer.parseInt(elements[9]);
+        } catch (Exception e) {
+            throw new IllegalArgumentException();
+        }
     }
 
     /**
