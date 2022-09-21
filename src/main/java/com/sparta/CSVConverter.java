@@ -1,15 +1,29 @@
 package com.sparta;
+import java.io.FileReader;
+import java.io.BufferedReader;
 
 /**
  * A to convert a .csv file to a string
  */
 public class CSVConverter {
-//    String[] convert(String fileName) {
-//        try (CSVReader reader = new CSVReader(new FileReader(fileName))) {
-//            List<String[]> r = reader.readAll();
-//            String[] records = r.split("\n");
-//            return records;
-//        }
-//        return null;
-//    }
+    String[] convert(String fileName) {
+        try (FileReader reader = new FileReader(fileName)) {
+            BufferedReader br - new BufferedReader(reader);
+            String line = "";
+            String[] tempArr;
+            String records = "";
+            while((line = br.readLine()) != null) {
+                tempArr = line.split(delimiter);
+                for(String tempStr : tempArr) {
+                    records=records+tempArr;
+                }
+            br.close();
+
+            return records;
+        }
+        catch(IOException ioe) {
+        ioe.printStackTrace();
+    }
+        return null;
+    }
 }
