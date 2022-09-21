@@ -3,7 +3,7 @@ package com.sparta;
 /**
  * A class representing an employee record.
  */
-public class Employee {
+public class Employee implements Comparable<Employee> {
     private int employeeID;
     private String namePrefix;
     private String firstName;
@@ -154,5 +154,10 @@ public class Employee {
         hash = 53 * hash + (dateOfJoining != null ? dateOfJoining.hashCode() : 0);
         hash = 53 * hash + salary;
         return hash;
+    }
+
+    @Override
+    public int compareTo(Employee employee) {
+        return Integer.compare(employeeID, employee.employeeID);
     }
 }
