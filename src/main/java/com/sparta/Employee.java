@@ -39,7 +39,7 @@ public class Employee {
         return gender;
     }
 
-    public String geteMail() {
+    public String getEMail() {
         return eMail;
     }
 
