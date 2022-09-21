@@ -1,6 +1,5 @@
 package com.sparta;
 
-import com.sparta.exceptions.EmployeeDifferentDataSameID;
 import com.sparta.util.TrackedHashMap;
 
 import java.util.*;
@@ -11,10 +10,10 @@ public class Employees {
     private List<Employee> sortedEmployeesCache = new ArrayList<>();
 
     private List<Employee> getSortedEmployees() {
-        if (!employees.mapChanged) return sortedEmployeesCache;
+        if (!employees.mapHasChanged()) return sortedEmployeesCache;
         sortedEmployeesCache = new ArrayList<>(employees.values());
         Collections.sort(sortedEmployeesCache);
-        employees.mapChanged = false;
+        employees.setMapUnchanged();
         return sortedEmployeesCache;
     }
 
@@ -22,13 +21,25 @@ public class Employees {
         return getSortedEmployees().toArray(new Employee[0]);
     }
 
-    public void addEmployee(Employee employee) throws EmployeeDifferentDataSameID {
+    public void addEmployee(Employee employee) {
         if (employee == null) return;
-        int id = employee.getEmployeeID();
-        if (employees.containsKey(id))
-            if (employee.equals(employees.get(id))) return;
-            else throw new EmployeeDifferentDataSameID(); // same ID different data!! handle this via a queue
-        employees.put(id, employee);
+
+        Employee out = employees.putIfAbsent(employee.getEmployeeID(), employee);
+        if (out == null || out.equals(employee)) return;
+
+        List<Employee> sorted = getSortedEmployees();
+        addEmployee(
+                sorted.get(sorted.size()-1).getEmployeeID() + 1,
+                employee.getNamePrefix(),
+                employee.getFirstName(),
+                employee.getMiddleInitial(),
+                employee.getLastName(),
+                employee.getGender(),
+                employee.getEMail(),
+                employee.getDateOfBirth(),
+                employee.getDateOfJoining(),
+                employee.getSalary()
+        );
     }
 
     public void addEmployee(
@@ -42,11 +53,11 @@ public class Employees {
             String dateOfBirth,
             String dateOfJoining,
             int salary
-    ) throws EmployeeDifferentDataSameID {
+    ) {
         addEmployee(new Employee(employeeID, namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary));
     }
 
-    public void addEmployee(String data) throws EmployeeDifferentDataSameID {
+    public void addEmployee(String data) {
         addEmployee(new Employee(data));
     }
 

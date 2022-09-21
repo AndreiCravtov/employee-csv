@@ -5,10 +5,18 @@ import java.util.Map;
 import java.util.function.BiFunction;
 
 public class TrackedHashMap<K, V> extends HashMap<K, V> {
-    public boolean mapChanged = false;
+    private boolean mapChanged = false;
 
     public TrackedHashMap() {
         super();
+    }
+
+    public boolean mapHasChanged() {
+        return mapChanged;
+    }
+
+    public void setMapUnchanged() {
+        mapChanged = false;
     }
 
     @Override
