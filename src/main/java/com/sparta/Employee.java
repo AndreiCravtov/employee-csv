@@ -123,4 +123,36 @@ public class Employee {
     public String serialize() {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", employeeID, namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null || obj.getClass() != this.getClass()) return false;
+        final Employee employee = (Employee) obj;
+        return employeeID == employee.employeeID &&
+                namePrefix.equals(employee.namePrefix) &&
+                firstName.equals(employee.firstName) &&
+                middleInitial == employee.middleInitial &&
+                lastName.equals(employee.lastName) &&
+                gender == employee.gender &&
+                eMail.equals(employee.eMail) &&
+                dateOfBirth.equals(employee.dateOfBirth) &&
+                dateOfJoining.equals(employee.dateOfJoining) &&
+                salary == employee.salary;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 821;
+        hash = 53 * hash + employeeID;
+        hash = 53 * hash + (namePrefix != null ? namePrefix.hashCode() : 0);
+        hash = 53 * hash + (firstName != null ? firstName.hashCode() : 0);
+        hash = 53 * hash + middleInitial;
+        hash = 53 * hash + (lastName != null ? lastName.hashCode() : 0);
+        hash = 53 * hash + gender;
+        hash = 53 * hash + (eMail != null ? eMail.hashCode() : 0);
+        hash = 53 * hash + (dateOfBirth != null ? dateOfBirth.hashCode() : 0);
+        hash = 53 * hash + (dateOfJoining != null ? dateOfJoining.hashCode() : 0);
+        hash = 53 * hash + salary;
+        return hash;
+    }
 }
