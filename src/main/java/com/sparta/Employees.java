@@ -5,7 +5,6 @@ import com.sparta.util.TrackedHashMap;
 import java.util.*;
 
 public class Employees {
-    private final String header = "Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary\n";
     private final TrackedHashMap<Integer, Employee> employees = new TrackedHashMap<>();
     private List<Employee> sortedEmployeesCache = new ArrayList<>();
 
@@ -62,7 +61,7 @@ public class Employees {
     }
 
     public String serialize() {
-        StringBuilder builder = new StringBuilder(header);
+        StringBuilder builder = new StringBuilder("Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary\n");
         for (Employee employee: getSortedEmployees())
             builder.append(employee.serialize()).append("\n");
         return builder.toString().strip();
