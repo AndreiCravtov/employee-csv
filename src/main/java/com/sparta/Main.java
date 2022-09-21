@@ -83,8 +83,9 @@ public class Main {
             employees.addEmployee(record);
 
         // Get employees array
-        Employee[] employeesArray = employees.getEmployees();
-        for (Employee e: employeesArray)
-            System.out.println(e.serialize());
+//        Employee[] employeesArray = employees.getEmployees();
+//        for (Employee e: employeesArray)
+//            System.out.println(e.serialize());
+        System.out.println(employees.serialize());
     }
 }
