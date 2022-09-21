@@ -4,7 +4,7 @@ package com.sparta;
  * A class representing an employee record.
  */
 public class Employee implements Comparable<Employee> {
-    private int employeeID;
+    private final int employeeID;
     private String namePrefix;
     private String firstName;
     private char middleInitial;
