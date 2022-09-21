@@ -11,8 +11,8 @@ public class Employee implements Comparable<Employee> {
     private String lastName;
     private char gender;
     private String eMail;
-    private String dateOfBirth;
-    private String dateOfJoining;
+    private final String dateOfBirth;
+    private final String dateOfJoining;
     private int salary;
 
     public int getEmployeeID() {
