@@ -11,6 +11,18 @@ public class TrackedHashMap<K, V> extends HashMap<K, V> {
         super();
     }
 
+    public TrackedHashMap(int initialCapacity) {
+        super(initialCapacity);
+    }
+
+    public TrackedHashMap(int initialCapacity, float loadFactor) {
+        super(initialCapacity, loadFactor);
+    }
+
+    public TrackedHashMap(Map<? extends K,? extends V> m) {
+        super(m);
+    }
+
     public boolean mapHasChanged() {
         return mapChanged;
     }

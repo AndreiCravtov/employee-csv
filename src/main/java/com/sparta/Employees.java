@@ -4,6 +4,9 @@ import com.sparta.util.TrackedHashMap;
 
 import java.util.*;
 
+/**
+ * This class is used to store a sorted collection
+ */
 public class Employees {
     private final TrackedHashMap<Integer, Employee> employees = new TrackedHashMap<>();
     private List<Employee> sortedEmployeesCache = new ArrayList<>();
