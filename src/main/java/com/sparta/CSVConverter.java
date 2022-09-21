@@ -11,11 +11,12 @@ public class CSVConverter {
     static String convert(String fileName) {
         try (FileReader reader = new FileReader("EmployeeRecords1.csv")) {
             BufferedReader br =new BufferedReader(reader);
-            String line = "";
             String s = "";
+            br.readLine();
+            String line1=null;
             final StringBuffer buffer = new StringBuffer(2048);
-            while ((line = br.readLine()) != null) {
-                s += line;
+            while ((line1 = br.readLine()) != null) {
+                s += line1 + "\n";
             }
             return s;
         } catch (FileNotFoundException e) {
