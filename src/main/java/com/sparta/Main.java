@@ -77,23 +77,14 @@ public class Main {
                 785482,Mr.,Geoffrey,J,Lemmons,M,geoffrey.lemmons@gmail.com,3/25/1960,3/15/2008,108088""";
         String[] records = data.split("\n");
 
-        // Creates employee map from data: removing any duplicates
-        Map<Integer, Employee> employeeMap = new HashMap<>();
-        for (String record: records) {
-            Employee employee = new Employee(record);
-            int id = employee.getEmployeeID();
-            if (employeeMap.containsKey(id)) {
-                if (employee.equals(employeeMap.get(id)))
-                    continue;
-                throw new Exception("Duplicate ID but not duplicate data");
-            }
-            employeeMap.put(id, employee);
-        }
+        // Creates employees obj from data: removing any duplicates and sorts
+        Employees employees = new Employees();
+        for (String record: records)
+            employees.addEmployee(record);
 
-        // Sorts the employees
-        ArrayList<Employee> employees = new ArrayList<>(employeeMap.values());
-        Collections.sort(employees);
-        for (Employee e: employees)
+        // Get employees array
+        Employee[] employeesArray = employees.getEmployees();
+        for (Employee e: employeesArray)
             System.out.println(e.serialize());
     }
 }

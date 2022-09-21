@@ -124,6 +124,13 @@ public class Employee implements Comparable<Employee> {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", employeeID, namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary);
     }
 
+    /**
+     * Indicates whether some Employee is "equal to" this one.
+     *
+     * @param   obj   the reference Employee with which to compare.
+     * @return  {@code true} if this object is the same as the obj
+     *          argument; {@code false} otherwise.
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) return false;
@@ -140,6 +147,13 @@ public class Employee implements Comparable<Employee> {
                 salary == employee.salary;
     }
 
+    /**
+     * Returns a hash code value for this Employee. This method is
+     * supported for the benefit of hash tables such as those provided by
+     * {@link java.util.HashMap}.
+     *
+     * @return a hash code value for this object.
+     */
     @Override
     public int hashCode() {
         int hash = 821;
