@@ -19,7 +19,7 @@ public class Main {
                 784160,Dr.,Corey,A,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616""";
         String[] records = data.split("\n");
 
-        String data = CSVConverter.convert("main\\resources\\EmployeeRecords1.csv");
+        String data = CSVConverter.convert("resources\\EmployeeRecords1.csv");
 
         // Creates employees obj from data: removing any duplicates and sorts
         Employees employees = new Employees();
