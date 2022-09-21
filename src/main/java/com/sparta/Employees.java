@@ -11,10 +11,7 @@ public class Employees {
     private List<Employee> sortedEmployeesCache = new ArrayList<>();
 
     private List<Employee> getSortedEmployees() {
-        if (!employees.mapChanged) {
-            System.out.println("uses cache");
-            return sortedEmployeesCache;
-        }
+        if (!employees.mapChanged) return sortedEmployeesCache;
         sortedEmployeesCache = new ArrayList<>(employees.values());
         Collections.sort(sortedEmployeesCache);
         employees.mapChanged = false;
