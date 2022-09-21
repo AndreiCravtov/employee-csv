@@ -9,5 +9,8 @@
         <module name="employee-csv" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="employee-csv" target="18" />
+    </bytecodeTargetLevel>
   </component>
 </project>
