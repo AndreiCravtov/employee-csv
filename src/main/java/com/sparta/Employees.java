@@ -10,7 +10,6 @@ import java.util.*;
  */
 public class Employees {
     private final TrackedHashMap<Integer, Employee> employees = new TrackedHashMap<>();
-    TrackedHashMap<Integer,Employee> erroneous = new TrackedHashMap<>();
     private List<Employee> sortedEmployeesCache = new ArrayList<>();
 
     /**
@@ -42,31 +41,27 @@ public class Employees {
     /**
      * This method adds an employee object to the currently stored employees
      * @param employee the employee to be added.
+     * @return true if added, false if erroneous
      */
-    public void addEmployee(Employee employee) {
-        if (employee == null) return;
+    public boolean addEmployee(Employee employee) {
+        if (employee == null) return false;
 
         Employee out = employees.putIfAbsent(employee.getId(), employee);
-        if (out == null || out.equals(employee))
-        {
-            erroneous.put(employee.getId(), employee);
-        }
-        else
-        {
-            List<Employee> sorted = getSortedEmployees();
-            addEmployee(new Employee(
-                    sorted.get(sorted.size()-1).getId() + 1,
-                    employee.getNamePrefix(),
-                    employee.getFirstName(),
-                    employee.getMiddleInitial(),
-                    employee.getLastName(),
-                    employee.getGender(),
-                    employee.getEMail(),
-                    employee.getDateOfBirth(),
-                    employee.getDateOfJoining(),
-                    employee.getSalary()
-            ));
-        }
+        if (out == null) return true;
+        if (out.equals(employee)) return false;
+        List<Employee> sorted = getSortedEmployees();
+        return addEmployee(new Employee(
+                sorted.get(sorted.size()-1).getId() + 1,
+                employee.getNamePrefix(),
+                employee.getFirstName(),
+                employee.getMiddleInitial(),
+                employee.getLastName(),
+                employee.getGender(),
+                employee.getEMail(),
+                employee.getDateOfBirth(),
+                employee.getDateOfJoining(),
+                employee.getSalary()
+        ));
     }
 
     /**
