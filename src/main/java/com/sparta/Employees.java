@@ -39,12 +39,12 @@ public class Employees {
     public void addEmployee(Employee employee) {
         if (employee == null) return;
 
-        Employee out = employees.putIfAbsent(employee.getEmployeeID(), employee);
+        Employee out = employees.putIfAbsent(employee.getId(), employee);
         if (out == null || out.equals(employee)) return;
 
         List<Employee> sorted = getSortedEmployees();
-        addEmployee(
-                sorted.get(sorted.size()-1).getEmployeeID() + 1,
+        addEmployee(new Employee(
+                sorted.get(sorted.size()-1).getId() + 1,
                 employee.getNamePrefix(),
                 employee.getFirstName(),
                 employee.getMiddleInitial(),
@@ -54,43 +54,7 @@ public class Employees {
                 employee.getDateOfBirth(),
                 employee.getDateOfJoining(),
                 employee.getSalary()
-        );
-    }
-
-    /**
-     * This method instantiates and adds an employee object to the currently stored employees, taking the data as parameters
-     * @param employeeID the employee ID
-     * @param namePrefix the title of the employee
-     * @param firstName the first name of the employee
-     * @param middleInitial the middle name initial of the employee
-     * @param lastName the last name of the employee
-     * @param gender a character representing the gender of the employee
-     * @param eMail the email of the employee
-     * @param dateOfBirth the date of birth of the employee
-     * @param dateOfJoining the date of joining to the company of the employee
-     * @param salary the salary of the employee
-     */
-    public void addEmployee(
-            int employeeID,
-            String namePrefix,
-            String firstName,
-            char middleInitial,
-            String lastName,
-            char gender,
-            String eMail,
-            String dateOfBirth,
-            String dateOfJoining,
-            int salary
-    ) {
-        addEmployee(new Employee(employeeID, namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary));
-    }
-
-    /**
-     * This method instantiates and adds an employee object to the currently stored employees, taking the data as a CSV row string
-     * @param row the CSV row
-     */
-    public void addEmployee(String row) {
-        addEmployee(new Employee(row));
+        ));
     }
 
     /**

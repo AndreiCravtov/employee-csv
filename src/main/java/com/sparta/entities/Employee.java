@@ -87,28 +87,6 @@ public class Employee extends DataObject {
         this.salary = salary;
     }
 
-//    /**
-//     * Instantiates a new employee object, taking the data as a CSV row string.
-//     * The string is de-serialized into the object fields
-//     * @param row the CSV row
-//     */
-//    public Employee(String row) throws IllegalArgumentException {
-//        String[] elements = row.strip().split(",");
-//        if (elements.length != 10) throw new IllegalArgumentException();
-//        try {
-//            this.employeeID = Integer.parseInt(elements[0]);
-//            this.namePrefix = elements[1];
-//            this.firstName = elements[2];
-//            this.middleInitial = elements[3].charAt(0);
-//            this.lastName = elements[4];
-//            this.gender = elements[5].charAt(0);
-//            this.eMail = elements[6];
-//            this.dateOfBirth = elements[7];
-//            this.dateOfJoining = elements[8];
-//            this.salary = Integer.parseInt(elements[9]);
-//        } catch (Exception e) {throw new IllegalArgumentException();}
-//    }
-
     /**
      * This method serializes the employee object.
      * It turns the fields in the employee object into a CSV row string.
