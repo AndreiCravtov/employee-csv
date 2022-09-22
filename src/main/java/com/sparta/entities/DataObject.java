@@ -5,7 +5,7 @@ public abstract class DataObject implements Comparable<DataObject> {
 
     public int getId() { return id; }
 
-    public DataObject(int id) { this.id = id; }
+    DataObject(int id) { this.id = id; }
 
     @Override
     public int compareTo(DataObject obj) {
