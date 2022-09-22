@@ -10,6 +10,7 @@ import java.util.*;
  */
 public class Employees {
     private final TrackedHashMap<Integer, Employee> employees = new TrackedHashMap<>();
+    TrackedHashMap<Integer,Employee> erroneous = new TrackedHashMap<>();
     private List<Employee> sortedEmployeesCache = new ArrayList<>();
 
     /**
@@ -46,21 +47,26 @@ public class Employees {
         if (employee == null) return;
 
         Employee out = employees.putIfAbsent(employee.getId(), employee);
-        if (out == null || out.equals(employee)) return;
-
-        List<Employee> sorted = getSortedEmployees();
-        addEmployee(new Employee(
-                sorted.get(sorted.size()-1).getId() + 1,
-                employee.getNamePrefix(),
-                employee.getFirstName(),
-                employee.getMiddleInitial(),
-                employee.getLastName(),
-                employee.getGender(),
-                employee.getEMail(),
-                employee.getDateOfBirth(),
-                employee.getDateOfJoining(),
-                employee.getSalary()
-        ));
+        if (out == null || out.equals(employee))
+        {
+            erroneous.put(employee.getId(), employee);
+        }
+        else
+        {
+            List<Employee> sorted = getSortedEmployees();
+            addEmployee(new Employee(
+                    sorted.get(sorted.size()-1).getId() + 1,
+                    employee.getNamePrefix(),
+                    employee.getFirstName(),
+                    employee.getMiddleInitial(),
+                    employee.getLastName(),
+                    employee.getGender(),
+                    employee.getEMail(),
+                    employee.getDateOfBirth(),
+                    employee.getDateOfJoining(),
+                    employee.getSalary()
+            ));
+        }
     }
 
     /**
