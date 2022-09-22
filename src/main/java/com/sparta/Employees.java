@@ -96,10 +96,11 @@ public class Employees {
      * This method serializes all the employees stored into a CSV file
      * @return the serialised CSV file as a string
      */
-    public String serialize() {
+    @Override
+    public String toString() {
         StringBuilder builder = new StringBuilder("Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary\n");
         for (Employee employee: getSortedEmployees())
-            builder.append(employee.serialize()).append("\n");
+            builder.append(employee.toString()).append("\n");
         return builder.toString().strip();
     }
 }

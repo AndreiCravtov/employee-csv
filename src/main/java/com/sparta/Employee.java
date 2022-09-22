@@ -98,8 +98,9 @@ public class Employee implements Comparable<Employee> {
      * @param row the CSV row
      */
     public Employee(String row) throws IllegalArgumentException {
+        String[] elements = row.strip().split(",");
+        if (elements.length != 10) throw new IllegalArgumentException();
         try {
-            String[] elements = row.strip().split(",");
             this.employeeID = Integer.parseInt(elements[0]);
             this.namePrefix = elements[1];
             this.firstName = elements[2];
@@ -110,9 +111,7 @@ public class Employee implements Comparable<Employee> {
             this.dateOfBirth = elements[7];
             this.dateOfJoining = elements[8];
             this.salary = Integer.parseInt(elements[9]);
-        } catch (Exception e) {
-            throw new IllegalArgumentException();
-        }
+        } catch (Exception e) {throw new IllegalArgumentException();}
     }
 
     /**
@@ -120,7 +119,8 @@ public class Employee implements Comparable<Employee> {
      * It turns the fields in the employee object into a CSV row string.
      * @return the serialised CSV row string
      */
-    public String serialize() {
+    @Override
+    public String toString() {
         return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", employeeID, namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary);
     }
 
