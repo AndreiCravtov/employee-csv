@@ -1,10 +1,9 @@
-package com.sparta;
+package com.sparta.entities;
 
 /**
  * A class representing an employee record.
  */
-public class Employee implements Comparable<Employee> {
-    private final int employeeID;
+public class Employee extends DataObject {
     private String namePrefix;
     private String firstName;
     private char middleInitial;
@@ -14,10 +13,6 @@ public class Employee implements Comparable<Employee> {
     private final String dateOfBirth;
     private final String dateOfJoining;
     private int salary;
-
-    public int getEmployeeID() {
-        return employeeID;
-    }
 
     public String getNamePrefix() {
         return namePrefix;
@@ -80,7 +75,7 @@ public class Employee implements Comparable<Employee> {
             String dateOfJoining,
             int salary
     ) {
-        this.employeeID = employeeID;
+        super(employeeID);
         this.namePrefix = namePrefix;
         this.firstName = firstName;
         this.middleInitial = middleInitial;
@@ -92,27 +87,27 @@ public class Employee implements Comparable<Employee> {
         this.salary = salary;
     }
 
-    /**
-     * Instantiates a new employee object, taking the data as a CSV row string.
-     * The string is de-serialized into the object fields
-     * @param row the CSV row
-     */
-    public Employee(String row) throws IllegalArgumentException {
-        String[] elements = row.strip().split(",");
-        if (elements.length != 10) throw new IllegalArgumentException();
-        try {
-            this.employeeID = Integer.parseInt(elements[0]);
-            this.namePrefix = elements[1];
-            this.firstName = elements[2];
-            this.middleInitial = elements[3].charAt(0);
-            this.lastName = elements[4];
-            this.gender = elements[5].charAt(0);
-            this.eMail = elements[6];
-            this.dateOfBirth = elements[7];
-            this.dateOfJoining = elements[8];
-            this.salary = Integer.parseInt(elements[9]);
-        } catch (Exception e) {throw new IllegalArgumentException();}
-    }
+//    /**
+//     * Instantiates a new employee object, taking the data as a CSV row string.
+//     * The string is de-serialized into the object fields
+//     * @param row the CSV row
+//     */
+//    public Employee(String row) throws IllegalArgumentException {
+//        String[] elements = row.strip().split(",");
+//        if (elements.length != 10) throw new IllegalArgumentException();
+//        try {
+//            this.employeeID = Integer.parseInt(elements[0]);
+//            this.namePrefix = elements[1];
+//            this.firstName = elements[2];
+//            this.middleInitial = elements[3].charAt(0);
+//            this.lastName = elements[4];
+//            this.gender = elements[5].charAt(0);
+//            this.eMail = elements[6];
+//            this.dateOfBirth = elements[7];
+//            this.dateOfJoining = elements[8];
+//            this.salary = Integer.parseInt(elements[9]);
+//        } catch (Exception e) {throw new IllegalArgumentException();}
+//    }
 
     /**
      * This method serializes the employee object.
@@ -121,7 +116,7 @@ public class Employee implements Comparable<Employee> {
      */
     @Override
     public String toString() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", employeeID, namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary);
+        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", this.getId(), namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary);
     }
 
     /**
@@ -135,7 +130,7 @@ public class Employee implements Comparable<Employee> {
     public boolean equals(Object obj) {
         if (obj == null || obj.getClass() != this.getClass()) return false;
         final Employee employee = (Employee) obj;
-        return employeeID == employee.employeeID &&
+        return this.getId() == employee.getId() &&
                 namePrefix.equals(employee.namePrefix) &&
                 firstName.equals(employee.firstName) &&
                 middleInitial == employee.middleInitial &&
@@ -157,7 +152,7 @@ public class Employee implements Comparable<Employee> {
     @Override
     public int hashCode() {
         int hash = 821;
-        hash = 53 * hash + employeeID;
+        hash = 53 * hash + this.getId();
         hash = 53 * hash + (namePrefix != null ? namePrefix.hashCode() : 0);
         hash = 53 * hash + (firstName != null ? firstName.hashCode() : 0);
         hash = 53 * hash + middleInitial;
@@ -168,10 +163,5 @@ public class Employee implements Comparable<Employee> {
         hash = 53 * hash + (dateOfJoining != null ? dateOfJoining.hashCode() : 0);
         hash = 53 * hash + salary;
         return hash;
-    }
-
-    @Override
-    public int compareTo(Employee employee) {
-        return Integer.compare(employeeID, employee.employeeID);
     }
 }
