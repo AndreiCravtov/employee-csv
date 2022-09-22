@@ -6,5 +6,7 @@ public class Main {
         CSVConverter.convert("src/main/resources/EmployeeRecordsLarge.csv", employees);
         System.out.println(employees.erroneous);
         System.out.println(employees.getEmployeeCount());
+
+        System.out.println(employees);
     }
 }

@@ -75,9 +75,9 @@ public class Employees {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("{\n");
+        StringBuilder builder = new StringBuilder("Employees(\n");
         for (Employee employee: getSortedEmployees())
             builder.append("\t").append(employee.toString().replace("\n", "\n\t")).append(",\n");
-        return builder.deleteCharAt(builder.length()-2).append("}").toString();
+        return builder.deleteCharAt(builder.length()-2).append(")").toString();
     }
 }
