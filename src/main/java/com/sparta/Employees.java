@@ -33,6 +33,12 @@ public class Employees {
     }
 
     /**
+     * Gets the number of employees stored
+     * @return the number of employees
+     */
+    public int getEmployeeCount() { return employees.size(); }
+
+    /**
      * This method adds an employee object to the currently stored employees
      * @param employee the employee to be added.
      */
