@@ -38,7 +38,7 @@ public class CSVConverter {
                             Integer.parseInt(elements[9])
                     );
                 } catch (Exception e) {throw new IllegalArgumentException(e);}
-                employees.addEmployee(employee);
+                if (!employees.addEmployee(employee)) throw new IllegalArgumentException("Duplicate data");
             }
         } catch (IOException | IllegalArgumentException e) {
             throw new RuntimeException(e);
