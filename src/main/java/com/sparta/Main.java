@@ -12,14 +12,14 @@ public class Main {
                 956633,Mr.,Hal,H,Farrow,M,hal.farrow@cox.net,3/15/1967,2/25/1991,164580
                 629539,Dr.,Del,I,Fernandez,M,del.fernandez@hotmail.com,8/13/1991,4/7/2016,138662
                 784160,Dr.,Corey,A,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
-                784160,Dr.,Corey,A,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
-                784160,Dr.,Corey,A,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
-                784160,Dr.,Corey,A,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
-                784160,Dr.,Corey,A,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
-                784160,Dr.,Corey,A,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616""";
+                784160,Dr.,Corey,B,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
+                784160,Dr.,Corey,C,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
+                784160,Dr.,Corey,D,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
+                784160,Dr.,Corey,E,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616
+                784160,Dr.,Corey,F,Jackman,M,corey.jackman@gmail.com,4/12/1959,6/29/1984,57616""";
         String[] records = data.split("\n");
 
-        String data = CSVConverter.convert("src\\main\\resources\\EmployeeRecords1.csv");
+//        String data = CSVConverter.convert("src\\main\\resources\\EmployeeRecords1.csv");
 
         // Creates employees obj from data: removing any duplicates and sorts
         Employees employees = new Employees();
@@ -29,7 +29,7 @@ public class Main {
         // Get employees array
         Employee[] employeesArray = employees.getEmployees();
         for (Employee e: employeesArray)
-            System.out.println(e.serialize());
-        System.out.println(employees.serialize());
+            System.out.println(e);
+        System.out.println(employees);
     }
 }
