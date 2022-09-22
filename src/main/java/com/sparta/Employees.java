@@ -69,9 +69,9 @@ public class Employees {
      */
     @Override
     public String toString() {
-        StringBuilder builder = new StringBuilder("Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary\n");
+        StringBuilder builder = new StringBuilder("{\n");
         for (Employee employee: getSortedEmployees())
             builder.append(employee.toString()).append("\n");
-        return builder.toString().strip();
+        return builder.append("}").toString();
     }
 }

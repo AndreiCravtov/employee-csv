@@ -1,5 +1,9 @@
 package com.sparta.entities;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+
 /**
  * A class representing an employee record.
  */
@@ -10,8 +14,8 @@ public class Employee extends DataObject {
     private String lastName;
     private char gender;
     private String eMail;
-    private final String dateOfBirth;
-    private final String dateOfJoining;
+    private final LocalDate dateOfBirth;
+    private final LocalDate dateOfJoining;
     private int salary;
 
     public String getNamePrefix() {
@@ -38,11 +42,11 @@ public class Employee extends DataObject {
         return eMail;
     }
 
-    public String getDateOfBirth() {
+    public LocalDate getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public String getDateOfJoining() {
+    public LocalDate getDateOfJoining() {
         return dateOfJoining;
     }
 
@@ -71,8 +75,8 @@ public class Employee extends DataObject {
             String lastName,
             char gender,
             String eMail,
-            String dateOfBirth,
-            String dateOfJoining,
+            LocalDate dateOfBirth,
+            LocalDate dateOfJoining,
             int salary
     ) {
         super(employeeID);
@@ -94,7 +98,19 @@ public class Employee extends DataObject {
      */
     @Override
     public String toString() {
-        return String.format("%s,%s,%s,%s,%s,%s,%s,%s,%s,%s", this.getId(), namePrefix, firstName, middleInitial, lastName, gender, eMail, dateOfBirth, dateOfJoining, salary);
+        return String.format(
+                "{\n\tID: %s,\n\tName: %s %s %s %s,\n\tGender: %s,\n\tE-Mail: %s,\n\tDate of birth: %s,\n\tDate of joining: %s,\n\tSalary: %s\n}",
+                this.getId(),
+                namePrefix,
+                firstName,
+                middleInitial,
+                lastName,
+                gender,
+                eMail,
+                dateOfBirth.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
+                dateOfJoining.format(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM)),
+                salary
+        );
     }
 
     /**

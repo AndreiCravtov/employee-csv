@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
+import java.time.LocalDate;
 
 /**
  * A to convert a .csv file to a string
@@ -19,8 +20,11 @@ public class CSVConverter {
             Employee employee;
             while ((line = br.readLine()) != null) {
                 String[] elements = line.strip().split(",");
-                if (elements.length != 10) throw new IllegalArgumentException();
+                if (elements.length != 10) throw new IllegalArgumentException("Wrong number of columns");
                 try {
+                    String[] birthDateElems = elements[7].split("/");
+                    String[] joinDateElems = elements[8].split("/");
+                    if (birthDateElems.length != 3 || joinDateElems.length != 3) throw new IllegalArgumentException("Invalid date");
                     employee = new Employee(
                             Integer.parseInt(elements[0]),
                             elements[1],
@@ -29,11 +33,11 @@ public class CSVConverter {
                             elements[4],
                             elements[5].charAt(0),
                             elements[6],
-                            elements[7],
-                            elements[8],
+                            LocalDate.of(Integer.parseInt(birthDateElems[2]), Integer.parseInt(birthDateElems[0]), Integer.parseInt(birthDateElems[1])),
+                            LocalDate.of(Integer.parseInt(joinDateElems[2]), Integer.parseInt(joinDateElems[0]), Integer.parseInt(joinDateElems[1])),
                             Integer.parseInt(elements[9])
                     );
-                } catch (Exception e) {throw new IllegalArgumentException();}
+                } catch (Exception e) {throw new IllegalArgumentException(e);}
                 employees.addEmployee(employee);
             }
         } catch (IOException | IllegalArgumentException e) {
