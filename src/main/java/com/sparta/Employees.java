@@ -71,7 +71,7 @@ public class Employees {
     public String toString() {
         StringBuilder builder = new StringBuilder("{\n");
         for (Employee employee: getSortedEmployees())
-            builder.append(employee.toString()).append("\n");
-        return builder.append("}").toString();
+            builder.append("\t").append(employee.toString().replace("\n", "\n\t")).append(",\n");
+        return builder.deleteCharAt(builder.length()-2).append("}").toString();
     }
 }

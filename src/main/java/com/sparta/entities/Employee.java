@@ -99,7 +99,7 @@ public class Employee extends DataObject {
     @Override
     public String toString() {
         return String.format(
-                "{\n\tID: %s,\n\tName: %s %s %s %s,\n\tGender: %s,\n\tE-Mail: %s,\n\tDate of birth: %s,\n\tDate of joining: %s,\n\tSalary: %s\n}",
+                "Employee(\n\tID: %s,\n\tName: %s %s %s %s,\n\tGender: %s,\n\tE-Mail: %s,\n\tDate of birth: %s,\n\tDate of joining: %s,\n\tSalary: %s\n)",
                 this.getId(),
                 namePrefix,
                 firstName,
