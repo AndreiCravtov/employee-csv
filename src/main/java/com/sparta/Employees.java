@@ -28,8 +28,8 @@ public class Employees {
      * Gets all employees stored and returns a sorted array.
      * @return employee array sorted by ID in ascending order
      */
-    public Employee[] getEmployees() {
-        return getSortedEmployees().toArray(new Employee[0]);
+    public List<Employee> getEmployees() {
+        return getSortedEmployees();
     }
 
     /**

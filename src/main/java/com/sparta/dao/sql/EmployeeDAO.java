@@ -6,6 +6,7 @@ import com.sparta.entities.Employee;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -129,6 +130,30 @@ public class EmployeeDAO implements DAO<Employee> {
 
     @Override
     public List<Employee> findAll() {
-        return null;
+        PreparedStatement findAllPS;
+        ResultSet rs;
+        List<Employee> result = new ArrayList<>();
+        try {
+            findAllPS = conn.prepareStatement(
+                    "SELECT * FROM employees");
+            rs = findAllPS.executeQuery();
+            while (rs.next()) {
+                result.add(new Employee(
+                        rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4).charAt(0),
+                        rs.getString(5),
+                        rs.getString(6).charAt(0),
+                        rs.getString(7),
+                        rs.getDate(8).toLocalDate(),
+                        rs.getDate(9).toLocalDate(),
+                        rs.getInt(10)
+                ));
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 }

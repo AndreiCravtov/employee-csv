@@ -12,9 +12,14 @@ public class Main {
         Employees employees = new Employees();
         List<String> err = new ArrayList<>();
         CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
+        System.out.println("ERRONEOUS:");
+        err.forEach(System.out::println);
 
         DAO<Employee> employeeDAO = EmployeeDAO.getInstance();
-        int newID = employeeDAO.insert(employees.getEmployees()[0]);
-        System.out.println(employeeDAO.findById(newID));
+        employees.getEmployees().forEach(employeeDAO::insert);
+
+        List<Employee> dbList = employeeDAO.findAll();
+        System.out.println("SQL:");
+        dbList.forEach(System.out::println);
     }
 }
