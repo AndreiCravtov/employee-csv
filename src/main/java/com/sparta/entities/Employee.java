@@ -1,5 +1,7 @@
 package com.sparta.entities;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.FormatStyle;
@@ -69,14 +71,14 @@ public class Employee extends DataObject {
      */
     public Employee(
             int employeeID,
-            String namePrefix,
-            String firstName,
+            @NotNull String namePrefix,
+            @NotNull String firstName,
             char middleInitial,
-            String lastName,
+            @NotNull String lastName,
             char gender,
-            String eMail,
-            LocalDate dateOfBirth,
-            LocalDate dateOfJoining,
+            @NotNull String eMail,
+            @NotNull LocalDate dateOfBirth,
+            @NotNull LocalDate dateOfJoining,
             int salary
     ) {
         super(employeeID);

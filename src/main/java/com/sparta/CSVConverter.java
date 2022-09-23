@@ -1,17 +1,19 @@
 package com.sparta;
 import com.sparta.entities.Employee;
+import com.sparta.util.RecordValidator;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.FileNotFoundException;
 import java.time.LocalDate;
+import java.util.List;
 
 /**
  * A to convert a .csv file to a string
  */
 public class CSVConverter {
-    static void convert(String fileName, Employees employees) {
+    static void convert(String fileName, Employees employees, List<String> erroneous) {
         try (FileReader reader = new FileReader(fileName)) {
             BufferedReader br =new BufferedReader(reader);
             br.readLine(); // skips 1st header line
@@ -19,14 +21,11 @@ public class CSVConverter {
             final StringBuffer buffer = new StringBuffer(2048);
             Employee employee;
             while ((line = br.readLine()) != null) {
-                String[] elements = line.strip().split(",");
-                if (elements.length != 10) throw new IllegalArgumentException("Wrong number of columns");
                 try {
+                    String[] elements = line.strip().split(",");
+                    if (!RecordValidator.isRecordValid(elements)) throw new IllegalArgumentException("This record is corrupt");
                     String[] birthDateElems = elements[7].split("/");
                     String[] joinDateElems = elements[8].split("/");
-                    if (birthDateElems.length != 3 || joinDateElems.length != 3) throw new IllegalArgumentException("Invalid dates");
-                    if (elements[3].length() != 1) throw new IllegalArgumentException("Invalid middle name initial");
-                    if (elements[5].length() != 1) throw new IllegalArgumentException("Invalid gender");
                     employee = new Employee(
                             Integer.parseInt(elements[0]),
                             elements[1],
@@ -39,10 +38,12 @@ public class CSVConverter {
                             LocalDate.of(Integer.parseInt(joinDateElems[2]), Integer.parseInt(joinDateElems[0]), Integer.parseInt(joinDateElems[1])),
                             Integer.parseInt(elements[9])
                     );
-                } catch (Exception e) {throw new IllegalArgumentException(e);}
-                if (!employees.addEmployee(employee)) throw new IllegalArgumentException("Duplicate data");
+                    if (!employees.addEmployee(employee)) throw new IllegalArgumentException("Duplicate data");
+                } catch (IllegalArgumentException e) {
+                    erroneous.add(line);
+                }
             }
-        } catch (IOException | IllegalArgumentException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
