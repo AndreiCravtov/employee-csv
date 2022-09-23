@@ -24,7 +24,9 @@ public class CSVConverter {
                 try {
                     String[] birthDateElems = elements[7].split("/");
                     String[] joinDateElems = elements[8].split("/");
-                    if (birthDateElems.length != 3 || joinDateElems.length != 3) throw new IllegalArgumentException("Invalid date");
+                    if (birthDateElems.length != 3 || joinDateElems.length != 3) throw new IllegalArgumentException("Invalid dates");
+                    if (elements[3].length() != 1) throw new IllegalArgumentException("Invalid middle name initial");
+                    if (elements[5].length() != 1) throw new IllegalArgumentException("Invalid gender");
                     employee = new Employee(
                             Integer.parseInt(elements[0]),
                             elements[1],
