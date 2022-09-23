@@ -1,6 +1,6 @@
 package com.sparta.util;
 
-public class RecordValidation {
+public class ErroneousDataTest {
     private static final int NumOfRecords = 10;
 
     public static boolean isRecordValid(String[] employeeRecord){
