@@ -47,30 +47,46 @@ public class EmployeeDAO implements DAO<Employee> {
     @Override
     public int insert(Employee newRow) {
         PreparedStatement insertStatement = null;
-        int newId = 0;
+        int newId = newRow.getId();
         try {
-            insertStatement = conn.prepareStatement(
-                    "INSERT INTO employees(id, name_prefix, first_name, middle_name_initial, last_name, gender, email, date_birth, date_joined, salary)" +
-                            "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-            insertStatement.setInt(1, newRow.getId());
-            insertStatement.setString(2, newRow.getNamePrefix());
-            insertStatement.setString(3, newRow.getFirstName());
-            insertStatement.setString(4, String.valueOf(newRow.getMiddleInitial()));
-            insertStatement.setString(5, newRow.getLastName());
-            insertStatement.setString(6, String.valueOf(newRow.getGender()));
-            insertStatement.setString(7, newRow.getEMail());
-            insertStatement.setDate(8, Date.valueOf(newRow.getDateOfBirth()));
-            insertStatement.setDate(9, Date.valueOf(newRow.getDateOfJoining()));
-            insertStatement.setInt(10, newRow.getSalary());
-            insertStatement.executeUpdate();
+            try {
+                insertStatement = conn.prepareStatement(
+                        "INSERT INTO employees(id, name_prefix, first_name, middle_name_initial, last_name, gender, email, date_birth, date_joined, salary)" +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                insertStatement.setInt(1, newRow.getId());
+                insertStatement.setString(2, newRow.getNamePrefix());
+                insertStatement.setString(3, newRow.getFirstName());
+                insertStatement.setString(4, String.valueOf(newRow.getMiddleInitial()));
+                insertStatement.setString(5, newRow.getLastName());
+                insertStatement.setString(6, String.valueOf(newRow.getGender()));
+                insertStatement.setString(7, newRow.getEMail());
+                insertStatement.setDate(8, Date.valueOf(newRow.getDateOfBirth()));
+                insertStatement.setDate(9, Date.valueOf(newRow.getDateOfJoining()));
+                insertStatement.setInt(10, newRow.getSalary());
+                insertStatement.executeUpdate();
+            } catch (SQLIntegrityConstraintViolationException e) {
+                insertStatement = conn.prepareStatement(
+                        "INSERT INTO employees(name_prefix, first_name, middle_name_initial, last_name, gender, email, date_birth, date_joined, salary)" +
+                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                insertStatement.setString(1, newRow.getNamePrefix());
+                insertStatement.setString(2, newRow.getFirstName());
+                insertStatement.setString(3, String.valueOf(newRow.getMiddleInitial()));
+                insertStatement.setString(4, newRow.getLastName());
+                insertStatement.setString(5, String.valueOf(newRow.getGender()));
+                insertStatement.setString(6, newRow.getEMail());
+                insertStatement.setDate(7, Date.valueOf(newRow.getDateOfBirth()));
+                insertStatement.setDate(8, Date.valueOf(newRow.getDateOfJoining()));
+                insertStatement.setInt(9, newRow.getSalary());
+                insertStatement.executeUpdate();
 
-            Statement getIdStatement = conn.createStatement();
-            ResultSet rs = getIdStatement.executeQuery(
-                    "SELECT * FROM employees " +
-                            "WHERE id=(SELECT MAX(id) FROM employees)");
-            rs.next();
-            newId = rs.getInt(1);
-        } catch (SQLException e) {
+                Statement getIdStatement = conn.createStatement();
+                ResultSet rs = getIdStatement.executeQuery(
+                        "SELECT LAST_INSERT_ID(id) FROM employees ORDER BY id DESC LIMIT 1");
+                rs.next();
+                newId = rs.getInt(1);
+            }
+        }
+        catch (SQLException e) {
             throw new RuntimeException(e);
         }
         return newId;
@@ -78,7 +94,27 @@ public class EmployeeDAO implements DAO<Employee> {
 
     @Override
     public Employee findById(int id) {
-        return null;
+        Employee result;
+        try {
+            findByIdPS.setInt(1, id);
+            ResultSet rs = findByIdPS.executeQuery();
+            rs.next();
+            result = new Employee(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4).charAt(0),
+                    rs.getString(5),
+                    rs.getString(6).charAt(0),
+                    rs.getString(7),
+                    rs.getDate(8).toLocalDate(),
+                    rs.getDate(9).toLocalDate(),
+                    rs.getInt(10)
+            );
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
     }
 
     @Override

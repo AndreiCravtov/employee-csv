@@ -14,6 +14,7 @@ public class Main {
         CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
 
         DAO<Employee> employeeDAO = EmployeeDAO.getInstance();
-        employeeDAO.insert(employees.getEmployees()[0]);
+        int newID = employeeDAO.insert(employees.getEmployees()[0]);
+        System.out.println(employeeDAO.findById(newID));
     }
 }
