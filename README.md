@@ -170,7 +170,7 @@ Instantiates a new employee object, taking the data as parameters\
 Each part of an Employee can be gotten by calling each of these get methods.
 ## Phase 2
 
-### Program flow
+### Program Flow
 
 Write SQL Statements to create table and persist data to the table.
 ```sql
