@@ -2,13 +2,14 @@ package com.sparta;
 
 import com.sparta.entities.Employee;
 import com.sparta.util.TrackedHashMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
 /**
  * This class is used to store unique employees sorted by their ID
  */
-public class Employees {
+public class Employees implements Iterable<Employee> {
     private final TrackedHashMap<Integer, Employee> employees = new TrackedHashMap<>();
     private List<Employee> sortedEmployeesCache = new ArrayList<>();
 
@@ -74,5 +75,11 @@ public class Employees {
         for (Employee employee: getSortedEmployees())
             builder.append("\t").append(employee.toString().replace("\n", "\n\t")).append(",\n");
         return builder.deleteCharAt(builder.length()-2).append(")").toString();
+    }
+
+    @NotNull
+    @Override
+    public Iterator<Employee> iterator() {
+        return getEmployees().iterator();
     }
 }

@@ -3,102 +3,91 @@ package com.sparta.dao.sql;
 import com.sparta.dao.interfaces.DAO;
 import com.sparta.entities.Employee;
 
+import java.sql.*;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.*;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.ArrayList;
 import java.util.Properties;
 
 public class EmployeeDAO implements DAO<Employee> {
-    private static Connection conn;
     private static EmployeeDAO instance;
-    private static PreparedStatement findByIdPS;
+    private final ConnectionPool connPool;
 
-    private EmployeeDAO() {}
+    private EmployeeDAO() {
+        // get connection pool
+        connPool = ConnectionPool.getInstance();
+    }
 
     public static EmployeeDAO getInstance() {
         if (instance == null)
             instance = new EmployeeDAO();
-        if (conn == null) {
-            Properties props = new Properties();
-            try {
-                props.load(new FileReader("src/main/resources/dbconnect.properties"));
-                conn = DriverManager.getConnection(
-                        props.getProperty("mysql.url"),
-                        props.getProperty("mysql.username"),
-                        props.getProperty("mysql.password")
-                );
-            } catch (IOException | SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        if (findByIdPS == null) {
-            try {
-                findByIdPS = conn.prepareStatement(
-                        "SELECT * FROM employees WHERE id = ?"
-                );
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
         return instance;
     }
 
     @Override
     public int insert(Employee newRow) {
-        PreparedStatement insertStatement = null;
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        PreparedStatement insert;
         int newId = newRow.getId();
         try {
             try {
-                insertStatement = conn.prepareStatement(
+                insert = conn.prepareStatement(
                         "INSERT INTO employees(id, name_prefix, first_name, middle_name_initial, last_name, gender, email, date_birth, date_joined, salary)" +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                insertStatement.setInt(1, newRow.getId());
-                insertStatement.setString(2, newRow.getNamePrefix());
-                insertStatement.setString(3, newRow.getFirstName());
-                insertStatement.setString(4, String.valueOf(newRow.getMiddleInitial()));
-                insertStatement.setString(5, newRow.getLastName());
-                insertStatement.setString(6, String.valueOf(newRow.getGender()));
-                insertStatement.setString(7, newRow.getEMail());
-                insertStatement.setDate(8, Date.valueOf(newRow.getDateOfBirth()));
-                insertStatement.setDate(9, Date.valueOf(newRow.getDateOfJoining()));
-                insertStatement.setInt(10, newRow.getSalary());
-                insertStatement.executeUpdate();
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                insert.setInt(1, newRow.getId());
+                insert.setString(2, newRow.getNamePrefix());
+                insert.setString(3, newRow.getFirstName());
+                insert.setString(4, String.valueOf(newRow.getMiddleInitial()));
+                insert.setString(5, newRow.getLastName());
+                insert.setString(6, String.valueOf(newRow.getGender()));
+                insert.setString(7, newRow.getEMail());
+                insert.setDate(8, Date.valueOf(newRow.getDateOfBirth()));
+                insert.setDate(9, Date.valueOf(newRow.getDateOfJoining()));
+                insert.setInt(10, newRow.getSalary());
+                insert.executeUpdate();
             } catch (SQLIntegrityConstraintViolationException e) {
-                insertStatement = conn.prepareStatement(
+                insert = conn.prepareStatement(
                         "INSERT INTO employees(name_prefix, first_name, middle_name_initial, last_name, gender, email, date_birth, date_joined, salary)" +
                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                insertStatement.setString(1, newRow.getNamePrefix());
-                insertStatement.setString(2, newRow.getFirstName());
-                insertStatement.setString(3, String.valueOf(newRow.getMiddleInitial()));
-                insertStatement.setString(4, newRow.getLastName());
-                insertStatement.setString(5, String.valueOf(newRow.getGender()));
-                insertStatement.setString(6, newRow.getEMail());
-                insertStatement.setDate(7, Date.valueOf(newRow.getDateOfBirth()));
-                insertStatement.setDate(8, Date.valueOf(newRow.getDateOfJoining()));
-                insertStatement.setInt(9, newRow.getSalary());
-                insertStatement.executeUpdate();
+                insert.setString(1, newRow.getNamePrefix());
+                insert.setString(2, newRow.getFirstName());
+                insert.setString(3, String.valueOf(newRow.getMiddleInitial()));
+                insert.setString(4, newRow.getLastName());
+                insert.setString(5, String.valueOf(newRow.getGender()));
+                insert.setString(6, newRow.getEMail());
+                insert.setDate(7, Date.valueOf(newRow.getDateOfBirth()));
+                insert.setDate(8, Date.valueOf(newRow.getDateOfJoining()));
+                insert.setInt(9, newRow.getSalary());
+                insert.executeUpdate();
 
-                Statement getIdStatement = conn.createStatement();
-                ResultSet rs = getIdStatement.executeQuery(
-                        "SELECT LAST_INSERT_ID(id) FROM employees ORDER BY id DESC LIMIT 1");
+                ResultSet rs = conn.createStatement().executeQuery("SELECT LAST_INSERT_ID(id) FROM employees ORDER BY LAST_INSERT_ID(id) DESC LIMIT 1");
                 rs.next();
                 newId = rs.getInt(1);
             }
-        }
-        catch (SQLException e) {
+        } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        // return connection
+        connPool.returnConnection(conn);
+
         return newId;
     }
 
     @Override
     public Employee findById(int id) {
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        PreparedStatement find;
         Employee result;
         try {
-            findByIdPS.setInt(1, id);
-            ResultSet rs = findByIdPS.executeQuery();
+            find = conn.prepareStatement("SELECT * FROM employees WHERE id = ?");
+            find.setInt(1, id);
+            ResultSet rs = find.executeQuery();
             rs.next();
             result = new Employee(
                     rs.getInt(1),
@@ -115,6 +104,10 @@ public class EmployeeDAO implements DAO<Employee> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        // return connection
+        connPool.returnConnection(conn);
+
         return result;
     }
 
@@ -130,13 +123,15 @@ public class EmployeeDAO implements DAO<Employee> {
 
     @Override
     public List<Employee> findAll() {
-        PreparedStatement findAllPS;
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        PreparedStatement find;
         ResultSet rs;
         List<Employee> result = new ArrayList<>();
         try {
-            findAllPS = conn.prepareStatement(
-                    "SELECT * FROM employees");
-            rs = findAllPS.executeQuery();
+            find = conn.prepareStatement("SELECT * FROM employees");
+            rs = find.executeQuery();
             while (rs.next()) {
                 result.add(new Employee(
                         rs.getInt(1),
@@ -154,6 +149,10 @@ public class EmployeeDAO implements DAO<Employee> {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+
+        // return connection
+        connPool.returnConnection(conn);
+
         return result;
     }
 }

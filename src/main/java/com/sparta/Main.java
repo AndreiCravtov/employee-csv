@@ -9,17 +9,30 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        // read from csv
         Employees employees = new Employees();
-        List<String> err = new ArrayList<>();
-        CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
-        System.out.println("ERRONEOUS:");
-        err.forEach(System.out::println);
+        List<String> erroneousData = new ArrayList<>();
+        CSVConverter.convert("src/main/resources/EmployeeRecordsLarge.csv", employees, erroneousData);
 
+        // sql begins here
         DAO<Employee> employeeDAO = EmployeeDAO.getInstance();
-        employees.getEmployees().forEach(employeeDAO::insert);
 
-        List<Employee> dbList = employeeDAO.findAll();
-        System.out.println("SQL:");
-        dbList.forEach(System.out::println);
+        long start = System.nanoTime();
+
+        // write to sql
+        List<Thread> threads = new ArrayList<>();
+        for (Employee employee: employees) {
+            Thread thread = new Thread(() -> {
+                employeeDAO.insert(employee);
+            });
+            thread.start();
+            threads.add(thread);
+        }
+        for (Thread thread: threads)
+            thread.join();
+
+        long end = System.nanoTime();
+
+        System.out.printf("%s ms\n", (float) (end - start)/1_000_000);
     }
 }
