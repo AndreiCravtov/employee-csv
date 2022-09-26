@@ -22,7 +22,7 @@ public class FunctionalCSVConverter {
                     return false;
                 })
                 .map(s -> s.split(",")) // splits on comma
-                .map(s -> {
+                .map(s -> { // creates employee objects
                     String[] birthDateElems = s[7].split("/");
                     String[] joinDateElems = s[8].split("/");
 
