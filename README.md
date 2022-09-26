@@ -1,15 +1,15 @@
 # employee-csv
 
-### Explanation
+<h3>Explanation</h3>
 
 This program reads data from .csv files and stores each row as in an employee class so each row can be used as an certain element (Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary). Then all of the Employees are joined together in an Employee class.
 
 ## Phase 1
-### CSV Converter
+<h3>CSV Converter</h3>
 ```java
 CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
 ```
-First the convert method is called using the parameters for the file's path, an employees class that will store all the employees found from the file, and a List of all of the erroneous data found in the file.
+First the convert method is called using the parameters for the files path, an employees class that will store all the employees found from the file, and a List of all of the erroneous data found in the file.
 ```java
 static void convert(String fileName, Employees employees, List<String> erroneous) {
         try (FileReader reader = new FileReader(fileName)) {
@@ -44,9 +44,9 @@ Each row of the buffer is read one at a time and each row is split up by each co
 ```java
 if (!RecordValidator.isRecordValid(elements)) throw new IllegalArgumentException("This record is corrupt");
 ```
-If the data is corrupted then it will throw an IllegalArgumentException to add it to the erroneous data.
+If the data is corupted then it will throw an IllegalArgumentException to add it to the erroneous data.
 
-### Employee
+<h3>Employee</h3>
 
 ```java
 if (!employees.addEmployee(employee)) throw new IllegalArgumentException("Duplicate data");
@@ -170,7 +170,7 @@ return namePrefix;
 Each part of an Employee can be gotten by calling each of these get methods.
 ## Phase 2
 
-### Program flow
+<h3>Program flow</h3>
 
 Write SQL Statements to create table and persist data to the table.
 ```java
@@ -217,7 +217,7 @@ public interface DAO<T extends DataObject> {
 }
 
 ````
-### CRUD Operations
+<h3>CRUD Operations</h3>
 In order to interact with the database,  Data Access Object interface created, containing methods to create a table and insert into it, as well as selecting and printing it out.
 
 A Data Transfer Object was used to store the data from the CSV file in a compatible format for the database.
@@ -317,3 +317,5 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
         }
         return result;
 ````
+
+
