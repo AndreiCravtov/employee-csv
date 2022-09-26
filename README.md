@@ -252,7 +252,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
 
 
 ```
- public int insert(Employee newRow) {
+    public int insert(Employee newRow) {
         // get connection
         Connection conn = connPool.borrowConnection();
 
@@ -304,7 +304,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
 ```
 #### Code retrieve all the records of employees from database.
 ```
- @Override
+    @Override
     public List<Employee> findAll() {
         // get connection
         Connection conn = connPool.borrowConnection();
@@ -339,7 +339,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
 ```
 TRUNCATE TABLE deletes the data inside a table, but not the table itself.
 ```
- @Override
+    @Override
     public void deleteAll() {
         // get connection
         Connection conn = connPool.borrowConnection();
