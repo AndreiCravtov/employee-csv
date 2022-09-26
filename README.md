@@ -1,9 +1,13 @@
-# employee-csv
+# Employees CSV to MySQL migration
 
+## Team members
+- Adam Lemdani
+- Andrei Cravtov
+- Dan Booth
+- Daniel Nenov
+- Lovedeep Saini
 
-
-
-<h3>Explanation</h3>
+### Explanation
 
 This program reads data from .csv files and stores each row as in an employee class so each row can be used as an certain element (Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary). Then all of the Employees are joined together in an Employee class.
 <h3>CSV Converter</h3>
