@@ -351,5 +351,62 @@ TRUNCATE TABLE deletes the data inside a table, but not the table itself.
         connPool.returnConnection(conn);
     }
 ```
+### Phase 4
+A lambda expression is a short block of code which takes in parameters and returns a value. Lambda expressions are similar to methods, but they do not need a name, and they can be implemented right in the body of a method.
+A stream is a sequence of objects that supports various methods which can be pipelined to produce the desired result.
+### Introducing Functional Programming( Lambda Expressions and Streams) in code.
+```
+public class FunctionalCSVConverter {
+    static void convert(String fileName, Employees employees, List<String> erroneous) throws IOException {
+
+        Files
+                .lines(Path.of(fileName)) // Calling from CSV as a stream
+                .skip(1) // skips first line which is the heading - Not valid data
+                .filter(s -> { // remove corrupted data
+                    if (RecordValidator.isRecordValid(s.split(","))) return true;
+                    erroneous.add(s);
+                    return false;
+                })
+                .map(s -> s.split(",")) // splits on comma
+                .map(s -> { // creates employee objects
+                    String[] birthDateElems = s[7].split("/");
+                    String[] joinDateElems = s[8].split("/");
+
+                    return new Employee(
+                        Integer.parseInt(s[0]),
+                        s[1],
+                        s[2],
+                        s[3].charAt(0),
+                        s[4],
+                        s[5].charAt(0),
+                        s[6],
+                        LocalDate.of(Integer.parseInt(birthDateElems[2]), Integer.parseInt(birthDateElems[0]), Integer.parseInt(birthDateElems[1])),
+                        LocalDate.of(Integer.parseInt(joinDateElems[2]), Integer.parseInt(joinDateElems[0]), Integer.parseInt(joinDateElems[1])),
+                        Integer.parseInt(s[9])
+                    );
+                })
+                .forEach(e -> {
+                    if (!employees.addEmployee(e))
+                        erroneous.add(String.format(
+                                "%s,%s,%s,%s,%s,%s,%s,%s,%s,%s",
+                                e.getId(),
+                                e.getNamePrefix(),
+                                e.getFirstName(),
+                                e.getMiddleInitial(),
+                                e.getLastName(),
+                                e.getGender(),
+                                e.getEMail(),
+                                e.getDateOfBirth().format(DateTimeFormatter.ofPattern("d/MM/uuuu")),
+                                e.getDateOfJoining().format(DateTimeFormatter.ofPattern("d/MM/uuuu")),
+                                e.getSalary()
+                        ));
+                });
+    }
+}
+```
+#### Conclusion
+When comparing our functional CSV reader, which utilises Lambdas and streams we came to conclusion that the functional implementation leads to a performance deficit resulting in around a 100ms performance reduction when compared to its non-functional counterpart.
+This in part could be attributed to the freedom provided when not interacting with streams, as it enables the developer to fine-tune their code and implementation for performance as well as functionality.
+
 
 
