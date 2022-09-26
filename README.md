@@ -1,10 +1,11 @@
 # employee-csv
 
+
+
+
 <h3>Explanation</h3>
 
 This program reads data from .csv files and stores each row as in an employee class so each row can be used as an certain element (Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary). Then all of the Employees are joined together in an Employee class.
-
-## Phase 1
 <h3>CSV Converter</h3>
 ```java
 CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
@@ -45,9 +46,6 @@ Each row of the buffer is read one at a time and each row is split up by each co
 if (!RecordValidator.isRecordValid(elements)) throw new IllegalArgumentException("This record is corrupt");
 ```
 If the data is corupted then it will throw an IllegalArgumentException to add it to the erroneous data.
-
-<h3>Employee</h3>
-
 ```java
 if (!employees.addEmployee(employee)) throw new IllegalArgumentException("Duplicate data");
 } catch (IllegalArgumentException e) {
@@ -170,10 +168,10 @@ return namePrefix;
 Each part of an Employee can be gotten by calling each of these get methods.
 ## Phase 2
 
-<h3>Program flow</h3>
+### Program Flow
 
 Write SQL Statements to create table and persist data to the table.
-```java
+```
 CREATE TABLE `sparta_db`.`employees` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name_prefix` VARCHAR(5) NOT NULL,
@@ -188,20 +186,12 @@ CREATE TABLE `sparta_db`.`employees` (
   PRIMARY KEY (`id`),
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
-````
-Create  DB connection in  dbconnect.properties.
-
-`````
-mysql.url=jdbc:mysql://localhost:3306/sparta_db
-mysql.username=root
-mysql.password=password
-
-`````
-
+```
+Create  DB connection .
 
 Create an Interface for Data Access Object to persist the data in database.
 
-```java
+```
 package com.sparta.dao.interfaces;
 
 import com.sparta.entities.DataObject;
@@ -210,94 +200,121 @@ import java.util.List;
 
 public interface DAO<T extends DataObject> {
     int insert(T newRow);
-    T findById(int id);
     void update(T updatedRow);
-    void deleteById(int id);
+    T findById(int id);
     List<T> findAll();
+    void deleteById(int id);
+    void deleteAll();
 }
 
-````
-<h3>CRUD Operations</h3>
+
+```
+### CRUD Operations
 In order to interact with the database,  Data Access Object interface created, containing methods to create a table and insert into it, as well as selecting and printing it out.
 
 A Data Transfer Object was used to store the data from the CSV file in a compatible format for the database.
 #### Prepared statements are used to access db. SELECT statement is used to select data from database.
 #### Code retrieve particular (id) record from the database.
-```java
-   if (findByIdPS == null) {
-            try {
-                findByIdPS = conn.prepareStatement(
-                        "SELECT * FROM employees WHERE id = ?"
-                );
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
-        }
-````
+```
+    @Override
+    public Employee findById(int id) {
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        PreparedStatement find;
+        Employee result;
+        try {
+            find = conn.prepareStatement("SELECT * FROM employees WHERE id = ?");
+            find.setInt(1, id);
+            ResultSet rs = find.executeQuery();
+            rs.next();
+            result = new Employee(
+                    rs.getInt(1),
+                    rs.getString(2),
+                    rs.getString(3),
+                    rs.getString(4).charAt(0),
+                    rs.getString(5),
+                    rs.getString(6).charAt(0),
+                    rs.getString(7),
+                    rs.getDate(8).toLocalDate(),
+                    rs.getDate(9).toLocalDate(),
+                    rs.getInt(10)
+            );
+        } catch (SQLException e) { throw new RuntimeException(e); }
+
+        // return connection
+        connPool.returnConnection(conn);
+
+        return result;
+    }
+```
 #### INSERT INTO statements used to insert new records in a table.
 
 
-```java
-@Override
-    public int insert(Employee newRow) {
-        PreparedStatement insertStatement = null;
+```
+ public int insert(Employee newRow) {
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        PreparedStatement insert;
         int newId = newRow.getId();
         try {
             try {
-                insertStatement = conn.prepareStatement(
+                insert = conn.prepareStatement(
                         "INSERT INTO employees(id, name_prefix, first_name, middle_name_initial, last_name, gender, email, date_birth, date_joined, salary)" +
-                                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                insertStatement.setInt(1, newRow.getId());
-                insertStatement.setString(2, newRow.getNamePrefix());
-                insertStatement.setString(3, newRow.getFirstName());
-                insertStatement.setString(4, String.valueOf(newRow.getMiddleInitial()));
-                insertStatement.setString(5, newRow.getLastName());
-                insertStatement.setString(6, String.valueOf(newRow.getGender()));
-                insertStatement.setString(7, newRow.getEMail());
-                insertStatement.setDate(8, Date.valueOf(newRow.getDateOfBirth()));
-                insertStatement.setDate(9, Date.valueOf(newRow.getDateOfJoining()));
-                insertStatement.setInt(10, newRow.getSalary());
-                insertStatement.executeUpdate();
+                        "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                insert.setInt(1, newRow.getId());
+                insert.setString(2, newRow.getNamePrefix());
+                insert.setString(3, newRow.getFirstName());
+                insert.setString(4, String.valueOf(newRow.getMiddleInitial()));
+                insert.setString(5, newRow.getLastName());
+                insert.setString(6, String.valueOf(newRow.getGender()));
+                insert.setString(7, newRow.getEMail());
+                insert.setDate(8, Date.valueOf(newRow.getDateOfBirth()));
+                insert.setDate(9, Date.valueOf(newRow.getDateOfJoining()));
+                insert.setInt(10, newRow.getSalary());
+                insert.executeUpdate();
             } catch (SQLIntegrityConstraintViolationException e) {
-                insertStatement = conn.prepareStatement(
+                insert = conn.prepareStatement(
                         "INSERT INTO employees(name_prefix, first_name, middle_name_initial, last_name, gender, email, date_birth, date_joined, salary)" +
                                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                insertStatement.setString(1, newRow.getNamePrefix());
-                insertStatement.setString(2, newRow.getFirstName());
-                insertStatement.setString(3, String.valueOf(newRow.getMiddleInitial()));
-                insertStatement.setString(4, newRow.getLastName());
-                insertStatement.setString(5, String.valueOf(newRow.getGender()));
-                insertStatement.setString(6, newRow.getEMail());
-                insertStatement.setDate(7, Date.valueOf(newRow.getDateOfBirth()));
-                insertStatement.setDate(8, Date.valueOf(newRow.getDateOfJoining()));
-                insertStatement.setInt(9, newRow.getSalary());
-                insertStatement.executeUpdate();
+                insert.setString(1, newRow.getNamePrefix());
+                insert.setString(2, newRow.getFirstName());
+                insert.setString(3, String.valueOf(newRow.getMiddleInitial()));
+                insert.setString(4, newRow.getLastName());
+                insert.setString(5, String.valueOf(newRow.getGender()));
+                insert.setString(6, newRow.getEMail());
+                insert.setDate(7, Date.valueOf(newRow.getDateOfBirth()));
+                insert.setDate(8, Date.valueOf(newRow.getDateOfJoining()));
+                insert.setInt(9, newRow.getSalary());
+                insert.executeUpdate();
 
-                Statement getIdStatement = conn.createStatement();
-                ResultSet rs = getIdStatement.executeQuery(
-                        "SELECT LAST_INSERT_ID(id) FROM employees ORDER BY id DESC LIMIT 1");
+                ResultSet rs = conn.createStatement().executeQuery("SELECT LAST_INSERT_ID(id) FROM employees ORDER BY LAST_INSERT_ID(id) DESC LIMIT 1");
                 rs.next();
                 newId = rs.getInt(1);
             }
-        }
-        catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+
+        // return connection
+        connPool.returnConnection(conn);
+
         return newId;
     }
 
-````
+```
 #### Code retrieve all the records of employees from database.
-```java
-@Override
+```
+ @Override
     public List<Employee> findAll() {
-        PreparedStatement findAllPS;
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        PreparedStatement find;
         ResultSet rs;
         List<Employee> result = new ArrayList<>();
         try {
-            findAllPS = conn.prepareStatement(
-                    "SELECT * FROM employees");
-            rs = findAllPS.executeQuery();
+            find = conn.prepareStatement("SELECT * FROM employees");
+            rs = find.executeQuery();
             while (rs.next()) {
                 result.add(new Employee(
                         rs.getInt(1),
@@ -312,10 +329,27 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
                         rs.getInt(10)
                 ));
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) { throw new RuntimeException(e); }
+
+        // return connection
+        connPool.returnConnection(conn);
+
         return result;
-````
+    }
+```
+TRUNCATE TABLE deletes the data inside a table, but not the table itself.
+```
+ @Override
+    public void deleteAll() {
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        try { conn.createStatement().execute("TRUNCATE employees"); }
+        catch (SQLException e) { throw new RuntimeException(e); }
+
+        // return connection
+        connPool.returnConnection(conn);
+    }
+```
 
 
