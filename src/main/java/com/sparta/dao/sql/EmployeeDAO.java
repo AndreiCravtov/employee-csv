@@ -4,11 +4,8 @@ import com.sparta.dao.interfaces.DAO;
 import com.sparta.entities.Employee;
 
 import java.sql.*;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Properties;
 
 public class EmployeeDAO implements DAO<Employee> {
     private static EmployeeDAO instance;
