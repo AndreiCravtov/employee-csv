@@ -1,10 +1,11 @@
 # employee-csv
 
+
+
+
 <h3>Explanation</h3>
 
 This program reads data from .csv files and stores each row as in an employee class so each row can be used as an certain element (Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary). Then all of the Employees are joined together in an Employee class.
-
-## Phase 1
 <h3>CSV Converter</h3>
 ```java
 CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
@@ -45,9 +46,6 @@ Each row of the buffer is read one at a time and each row is split up by each co
 if (!RecordValidator.isRecordValid(elements)) throw new IllegalArgumentException("This record is corrupt");
 ```
 If the data is corupted then it will throw an IllegalArgumentException to add it to the erroneous data.
-
-<h3>Employee</h3>
-
 ```java
 if (!employees.addEmployee(employee)) throw new IllegalArgumentException("Duplicate data");
 } catch (IllegalArgumentException e) {
@@ -170,10 +168,10 @@ return namePrefix;
 Each part of an Employee can be gotten by calling each of these get methods.
 ## Phase 2
 
-<h3>Program flow</h3>
+### Program Flow
 
 Write SQL Statements to create table and persist data to the table.
-```java
+````
 CREATE TABLE `sparta_db`.`employees` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name_prefix` VARCHAR(5) NOT NULL,
@@ -189,19 +187,11 @@ CREATE TABLE `sparta_db`.`employees` (
   UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE,
   UNIQUE INDEX `email_UNIQUE` (`email` ASC) VISIBLE);
 ````
-Create  DB connection in  dbconnect.properties.
-
-`````
-mysql.url=jdbc:mysql://localhost:3306/sparta_db
-mysql.username=root
-mysql.password=password
-
-`````
-
+Create  DB connection .
 
 Create an Interface for Data Access Object to persist the data in database.
 
-```java
+````
 package com.sparta.dao.interfaces;
 
 import com.sparta.entities.DataObject;
@@ -217,13 +207,13 @@ public interface DAO<T extends DataObject> {
 }
 
 ````
-<h3>CRUD Operations</h3>
+### CRUD Operations
 In order to interact with the database,  Data Access Object interface created, containing methods to create a table and insert into it, as well as selecting and printing it out.
 
 A Data Transfer Object was used to store the data from the CSV file in a compatible format for the database.
 #### Prepared statements are used to access db. SELECT statement is used to select data from database.
 #### Code retrieve particular (id) record from the database.
-```java
+````
    if (findByIdPS == null) {
             try {
                 findByIdPS = conn.prepareStatement(
@@ -237,7 +227,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
 #### INSERT INTO statements used to insert new records in a table.
 
 
-```java
+````
 @Override
     public int insert(Employee newRow) {
         PreparedStatement insertStatement = null;
@@ -288,7 +278,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
 
 ````
 #### Code retrieve all the records of employees from database.
-```java
+````
 @Override
     public List<Employee> findAll() {
         PreparedStatement findAllPS;
