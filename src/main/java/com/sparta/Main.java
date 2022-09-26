@@ -34,5 +34,8 @@ public class Main {
         long end = System.nanoTime();
 
         System.out.printf("%s ms\n", (float) (end - start)/1_000_000);
+
+        // reset employees table
+        employeeDAO.deleteAll();
     }
 }

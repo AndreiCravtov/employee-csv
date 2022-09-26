@@ -6,9 +6,10 @@ import java.util.List;
 
 public interface DAO<T extends DataObject> {
     int insert(T newRow);
-    T findById(int id);
     void update(T updatedRow);
-    void deleteById(int id);
+    T findById(int id);
     List<T> findAll();
+    void deleteById(int id);
+    void deleteAll();
 }
 

@@ -67,14 +67,17 @@ public class EmployeeDAO implements DAO<Employee> {
                 rs.next();
                 newId = rs.getInt(1);
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) { throw new RuntimeException(e); }
 
         // return connection
         connPool.returnConnection(conn);
 
         return newId;
+    }
+
+    @Override
+    public void update(Employee updatedRow) {
+
     }
 
     @Override
@@ -101,24 +104,12 @@ public class EmployeeDAO implements DAO<Employee> {
                     rs.getDate(9).toLocalDate(),
                     rs.getInt(10)
             );
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) { throw new RuntimeException(e); }
 
         // return connection
         connPool.returnConnection(conn);
 
         return result;
-    }
-
-    @Override
-    public void update(Employee updatedRow) {
-
-    }
-
-    @Override
-    public void deleteById(int id) {
-
     }
 
     @Override
@@ -146,13 +137,28 @@ public class EmployeeDAO implements DAO<Employee> {
                         rs.getInt(10)
                 ));
             }
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        } catch (SQLException e) { throw new RuntimeException(e); }
 
         // return connection
         connPool.returnConnection(conn);
 
         return result;
+    }
+
+    @Override
+    public void deleteById(int id) {
+
+    }
+
+    @Override
+    public void deleteAll() {
+        // get connection
+        Connection conn = connPool.borrowConnection();
+
+        try { conn.createStatement().executeQuery("TRUNCATE employees"); }
+        catch (SQLException e) { throw new RuntimeException(e); }
+
+        // return connection
+        connPool.returnConnection(conn);
     }
 }
