@@ -16,7 +16,8 @@ public class Main {
         // read from csv
         Employees employees = new Employees();
         List<String> erroneousData = new ArrayList<>();
-        CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, erroneousData);
+        FunctionalCSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, erroneousData);
+        erroneousData.forEach(System.out::println);
         benchmarker.stop(); //---------
 
         benchmarker.start("SQL stuff"); //---------
