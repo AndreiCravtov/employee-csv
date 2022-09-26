@@ -187,7 +187,7 @@ CREATE TABLE `sparta_db`.`employees` (
     `salary` INT NOT NULL,
     PRIMARY KEY (`id`),
     UNIQUE INDEX `id_UNIQUE` (`id` ASC) VISIBLE
-)
+);
 ```
 Create  DB connection in  dbconnect.properties.
 
@@ -238,7 +238,7 @@ if (findByIdPS == null) {
 
 
 ```java
-@Override
+    @Override
     public int insert(Employee newRow) {
         PreparedStatement insertStatement = null;
         int newId = newRow.getId();
@@ -289,7 +289,7 @@ if (findByIdPS == null) {
 ```
 #### Code retrieve all the records of employees from database.
 ```java
-@Override
+    @Override
     public List<Employee> findAll() {
         PreparedStatement findAllPS;
         ResultSet rs;
