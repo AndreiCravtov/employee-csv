@@ -12,7 +12,7 @@ public class Main {
         // read from csv
         Employees employees = new Employees();
         List<String> erroneousData = new ArrayList<>();
-        CSVConverter.convert("src/main/resources/EmployeeRecordsLarge.csv", employees, erroneousData);
+        CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, erroneousData);
 
         // sql begins here
         DAO<Employee> employeeDAO = EmployeeDAO.getInstance();

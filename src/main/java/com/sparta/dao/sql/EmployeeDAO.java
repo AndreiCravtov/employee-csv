@@ -155,7 +155,7 @@ public class EmployeeDAO implements DAO<Employee> {
         // get connection
         Connection conn = connPool.borrowConnection();
 
-        try { conn.createStatement().executeQuery("TRUNCATE employees"); }
+        try { conn.createStatement().execute("TRUNCATE employees"); }
         catch (SQLException e) { throw new RuntimeException(e); }
 
         // return connection
