@@ -4,8 +4,6 @@ import com.sparta.util.RecordValidator;
 
 import java.io.FileReader;
 import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.FileNotFoundException;
 import java.time.LocalDate;
 import java.util.List;
 
