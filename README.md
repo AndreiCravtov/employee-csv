@@ -10,7 +10,7 @@
 ### Explanation
 
 This program reads data from .csv files and stores each row as in an employee class so each row can be used as an certain element (Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary). Then all of the Employees are joined together in an Employee class.
-<h3>CSV Converter</h3>
+### CSV Converter
 ```java
 CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
 ```
@@ -23,27 +23,25 @@ static void convert(String fileName, Employees employees, List<String> erroneous
 ```
 Then a file reader is called and reads from the files path. The buffered reader is called next using the file reader to make things for efficient. The buffered reader skips the first line as the first line of each csv file just contains a header.
 ```java
-String line;
-final StringBuffer buffer = new StringBuffer(2048);
-        Employee employee;
-        while ((line = br.readLine()) != null) {
-        try {
-        String[] elements = line.strip().split(",");
-        if (!RecordValidator.isRecordValid(elements)) throw new IllegalArgumentException("This record is corrupt");
-        String[] birthDateElems = elements[7].split("/");
-        String[] joinDateElems = elements[8].split("/");
-        employee = new Employee(
-        Integer.parseInt(elements[0]),
-        elements[1],
-        elements[2],
-        elements[3].charAt(0),
-        elements[4],
-        elements[5].charAt(0),
-        elements[6],
-        LocalDate.of(Integer.parseInt(birthDateElems[2]), Integer.parseInt(birthDateElems[0]), Integer.parseInt(birthDateElems[1])),
-        LocalDate.of(Integer.parseInt(joinDateElems[2]), Integer.parseInt(joinDateElems[0]), Integer.parseInt(joinDateElems[1])),
-        Integer.parseInt(elements[9])
-        );
+  Employee employee;
+  while ((line = br.readLine()) != null) {
+      try {
+          String[] elements = line.strip().split(",");
+          if (!RecordValidator.isRecordValid(elements)) throw new IllegalArgumentException("This record is corrupt");
+          String[] birthDateElems = elements[7].split("/");
+          String[] joinDateElems = elements[8].split("/");
+          employee = new Employee(
+                   Integer.parseInt(elements[0]),
+                   elements[1],
+                   elements[2],
+                   elements[3].charAt(0),
+                   elements[4],
+                   elements[5].charAt(0),
+                   elements[6],
+                   LocalDate.of(Integer.parseInt(birthDateElems[2]), Integer.parseInt(birthDateElems[0]), Integer.parseInt(birthDateElems[1])),
+                   LocalDate.of(Integer.parseInt(joinDateElems[2]), Integer.parseInt(joinDateElems[0]), Integer.parseInt(joinDateElems[1])),
+                   Integer.parseInt(elements[9])
+          );
 ```
 Each row of the buffer is read one at a time and each row is split up by each comma as each row in a csv is always separated by one. Each row is added to a Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary in order. Emp ID and Salary take an int since they are a number. Gender and Initial take a character since they just are one letter long. Date of birth and date joined take a type date. The employee is then added to the employees class.
 ```java
@@ -175,7 +173,7 @@ Each part of an Employee can be gotten by calling each of these get methods.
 ### Program Flow
 
 Write SQL Statements to create table and persist data to the table.
-```
+```SQL
 CREATE TABLE `sparta_db`.`employees` (
   `id` INT NOT NULL AUTO_INCREMENT,
   `name_prefix` VARCHAR(5) NOT NULL,
@@ -195,7 +193,7 @@ Create  DB connection .
 
 Create an Interface for Data Access Object to persist the data in database.
 
-```
+```java
 package com.sparta.dao.interfaces;
 
 import com.sparta.entities.DataObject;
@@ -219,7 +217,7 @@ In order to interact with the database,  Data Access Object interface created, c
 A Data Transfer Object was used to store the data from the CSV file in a compatible format for the database.
 #### Prepared statements are used to access db. SELECT statement is used to select data from database.
 #### Code retrieve particular (id) record from the database.
-```
+```java
     @Override
     public Employee findById(int id) {
         // get connection
@@ -255,7 +253,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
 #### INSERT INTO statements used to insert new records in a table.
 
 
-```
+```java
     public int insert(Employee newRow) {
         // get connection
         Connection conn = connPool.borrowConnection();
@@ -307,7 +305,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
 
 ```
 #### Code retrieve all the records of employees from database.
-```
+```java
     @Override
     public List<Employee> findAll() {
         // get connection
@@ -342,7 +340,7 @@ A Data Transfer Object was used to store the data from the CSV file in a compati
     }
 ```
 TRUNCATE TABLE deletes the data inside a table, but not the table itself.
-```
+```java
     @Override
     public void deleteAll() {
         // get connection
@@ -355,11 +353,105 @@ TRUNCATE TABLE deletes the data inside a table, but not the table itself.
         connPool.returnConnection(conn);
     }
 ```
+
+### Phase 3 - Concurrency 
+Phase 3 of the product speification was the requirement to incorporate concurrency 
+into our project. With the structure of our project being tailored to performance, the most logical
+implementation of concurrency was while inserting data into our database.
+This being on the basis that it enables us to act upon multiple insertions, as opposed 
+to being restricted by a sequential addition. 
+
+In order to facilitate this we created a <b><i> ConnectionPool </b></i> class, which
+is responsible for instantiating new connections, as well as assigning the connections to threads.
+
+```java
+    private static ConnectionPool instance;
+
+    private static final int POOL_CAPACITY = 25;
+
+    private final BlockingQueue<Connection> pool = new ArrayBlockingQueue<>(POOL_CAPACITY);
+```
+As the above snippet demonstrates, 3 instance variables were declared which served the following purpose:
+- <b> instance </b> - Instantiates new <b> ConnectionPool </b> object. 
+- <b> POOL_CAPACITY </b> - Specifies how many threads are in use 
+- <b> pool </b> - This serves the following purposes: 
+    
+    - Provides a thread-safe collection, ensuring data integrity and reliable functionality through ArrayBlockingQueue.
+    - A means of storing connections 
+
+The constructor of course serving as means of constructing our connections, is also delegated 
+the task of screening and instantiating the specified number of threads declared through
+<b>POOL_CAPACITY</b>
+
+```java
+    private ConnectionPool() {
+        String url;
+        String username;
+        String password;
+
+        // get properties
+        Properties props = new Properties();
+        try {
+            props.load(new FileReader("src/main/resources/dbconnect.properties"));
+            url = props.getProperty("mysql.url");
+            username = props.getProperty("mysql.username");
+            password = props.getProperty("mysql.password");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // initialize connections
+        try {
+            for (int i=0; i<POOL_CAPACITY; i++)
+                pool.offer(DriverManager.getConnection(url, username, password));
+        } catch (SQLException e) { throw new RuntimeException(e); }
+    }
+```
+
+Following on from the successful construction of our <b> connection </b>, we then proceed 
+to ensure that we have a viable connection, which is achieved by screening to check if our 
+<b> instance </b> is <i> null </i> and in the event it is, instantiates a nwe connection.
+
+
+```java
+    static ConnectionPool getInstance() {
+        if (instance == null)
+            instance = new ConnectionPool();
+        return instance;
+    }
+```
+Once connections are assigned, they'll fulfill their delegated task before becoming obsolete and as such, should
+be returned to the <b> pool </b> for re-allocation, so that they can be used again going forward.
+In the snippet below, we're iterating through our <b> pool </b> and attempting to obtain the first connection stored,
+in the event this returns <i> null </i>, we pause until one becomes available before returning the fresh connection.
+
+```java
+    Connection borrowConnection() {
+        Connection conn;
+        while ((conn = pool.poll()) == null); // pause execution until connection obtained
+        return conn;
+    }
+```
+In the above snippet, there's a situation in which the pool may run dry, where all connections are in use and there's none
+available for re-allocation - This is alleviated largely through usage of returning our connections following having completed
+their intended use-case.
+
+```java
+    void returnConnection(Connection connection) {
+        pool.offer(connection);
+    }
+```
+The above method is called within the <b> EmployeeDAO </b> class which is explained and demonstrated in <b><i> Phase 2 </b></i>
+above.
+What this method does is return the connection back into the pool following its use case having been completed, which ensures 
+a replenishment in the pool alleviating circumstances in which a connection is required, but not available.
+
+
 ### Phase 4
 A lambda expression is a short block of code which takes in parameters and returns a value. Lambda expressions are similar to methods, but they do not need a name, and they can be implemented right in the body of a method.
 A stream is a sequence of objects that supports various methods which can be pipelined to produce the desired result.
 ### Introducing Functional Programming( Lambda Expressions and Streams) in code.
-```
+```java
 public class FunctionalCSVConverter {
     static void convert(String fileName, Employees employees, List<String> erroneous) throws IOException {
 
@@ -408,9 +500,38 @@ public class FunctionalCSVConverter {
     }
 }
 ```
-#### Conclusion
-When comparing our functional CSV reader, which utilises Lambdas and streams we came to conclusion that the functional implementation leads to a performance deficit resulting in around a 100ms performance reduction when compared to its non-functional counterpart.
-This in part could be attributed to the freedom provided when not interacting with streams, as it enables the developer to fine-tune their code and implementation for performance as well as functionality.
 
 
+## Conclusion
 
+<b> Concurrency </b>
+
+Concurrency served as a solid implementation, enhancing the overall performance of our insertion to our database.
+Within our group, we have 3 different operating systems in use, representing windows, linux and macOS. As a result of this,
+and different hardware availability, we experienced varying results between us. These being as follows:
+
+- Mac OS performed better with  fewer threads, inserting 10k records in 2.4 seconds while utilising 25 threads and depleting when going beyond.
+- Linux performed better with more threads, inserting 10k records in 3.5 seconds while utilising 150 threads and depleting when going lower.
+- Windows performed between the two, inserting 10k records in 3.7 seconds with 100 threads and depleting when going above, or below.
+
+Research has revealed that within Linux thread usage is cheaper, with Windows coming in second and MacOS third. This being one driving 
+influence behind the results.
+
+On average, concurrency enhanced performance quite dramatically, almost halving insertion times on 10k records.
+
+<b> Functional Programming </b>
+
+The initial stages of planning entailed a large focus and discussion relating to performance, with a focus on avoiding
+and alleviating unecessary/avoidable time complexities, whether this be through collections used, methods used or otherwise.
+As a result, we believe that there wasn't much room for expansion, or improvement in regards to efficacy which may have influenced
+our results into seeming <i> lesser </i> than they actually are.
+
+Overall, we found the following:
+
+While comparing the <b> FunctionalCSVReader </b> to its non-functional counterpart, extensive testing revealed that it was infact less-performant,
+averaging around 100ms slower across all operating systems and machines available to us.
+
+In this application, it seemed that the incorporation of functional programming actually slowed things down. Again, this is possibly
+attributed to the fact that we as a team placed a large focus on speed and efficacy, which unfortunately functional programming 
+can't facilitate. Although providing consistently reliable execution, this seemingly comes at the price of lack of customisability 
+and if speed is the intention, could potentially serve as a bottleneck and counter-intuitive implementation.
