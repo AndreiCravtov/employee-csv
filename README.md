@@ -9,7 +9,7 @@
 
 ### Explanation
 
-This program reads data from .csv files and stores each row as in an employee class so each row can be used as an certain element (Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary). Then all of the Employees are joined together in an Employee class.
+This program reads data from .csv files and stores each row as in an employee class so each row can be used as an certain element (Emp ID,Name Prefix,First Name,Middle Initial,Last Name,Gender,E Mail,Date of Birth,Date of Joining,Salary). Then all of the employees are joined together in an Employeed class.
 ### CSV Converter
 ```java
 CSVConverter.convert("src/main/resources/EmployeeRecords1.csv", employees, err);
